@@ -1,7 +1,8 @@
 from django.db import models
 
 class CarMake(models.Model):
-    name = models.CharField(max_index=True, max_length=100)
+    # Sửa max_index thành db_index ở dòng dưới đây
+    name = models.CharField(db_index=True, max_length=100)
     description = models.TextField()
 
     def __str__(self):
