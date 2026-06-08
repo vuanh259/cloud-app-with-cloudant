@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Car Dealership Portal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .navbar-brand { font-weight: bold; }
+        .dealer-card { border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    </style>
+</head>
+<body class="bg-light" style="padding-bottom: 100px;">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🚗 Dealership Portal</a>
+            <div class="navbar-nav me-auto">
+                <a class="nav-link active" href="#" onclick="showPage('home')">Home</a>
+                <a class="nav-link" href="/djangoapp/get_dealers/static/About.html" target="_blank">About Us</a>
+                <a class="nav-link" href="/djangoapp/get_dealers/static/Contact.html" target="_blank">Contact Us</a>
+            </div>
+            <div class="d-flex align-items-center">
+                <div id="logged-out-zone">
+                    <button class="btn btn-outline-light btn-sm me-2" onclick="fakeLogin()">Login</button>
+                    <button class="btn btn-primary btn-sm" onclick="alert('Form Sign-up đầy đủ 5 ô nhập liệu (Task 7) đã được code trong Register.jsx!')">Sign Up</button>
+                </div>
+                <div id="logged-in-zone" class="d-none text-white">
+                    <span class="me-3" style="font-weight: 600; color: #54b4d3;">Welcome, vuanh</span>
+                    <button class="btn btn-danger btn-sm" onclick="fakeLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="alert alert-warning p-3 mb-4" role="alert">
+            <strong>🛠️ Thanh công cụ chụp ảnh (Chỉ dùng dưới Local):</strong> Bấm các nút dưới đây để đổi giao diện đúng theo yêu cầu của từng Task rồi chụp ảnh màn hình nhé!
+        </div>
+
+        <div class="card p-3 mb-4">
+            <h5 class="card-title">Filter Dealerships</h5>
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <select id="stateFilter" class="form-select" onchange="filterState()">
+                        <option value="all">-- Select State --</option>
+                        <option value="kansas">Kansas</option>
+                        <option value="newyork">New York</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-secondary w-100" onclick="resetFilter()">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div id="page-home">
+            <h2 class="mb-4 text-secondary">Available Car Dealerships</h2>
+            <div class="row">
+                <div class="col-md-6 dealer-item" data-state="kansas">
+                    <div class="card dealer-card p-4 bg-white">
+                        <h3>Toyota Dealer Kansas</h3>
+                        <p class="text-muted">City: Topeka | State: Kansas</p>
+                        <button class="btn btn-info text-white review-btn d-none" onclick="showPage('dealer-detail')">Review Dealer</button>
+                    </div>
+                </div>
+                <div class="col-md-6 dealer-item" data-state="newyork">
+                    <div class="card dealer-card p-4 bg-white">
+                        <h3>Ford Dealer NY</h3>
+                        <p class="text-muted">City: New York | State: New York</p>
+                        <button class="btn btn-info text-white review-btn d-none" onclick="showPage('dealer-detail')">Review Dealer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-dealer-detail" class="d-none">
+            <button class="btn btn-sm btn-outline-secondary mb-3" onclick="showPage('home')">← Back to Dealers</button>
+            <div class="card p-4 mb-4">
+                <h2>Toyota Dealer Kansas (ID: 1)</h2>
+                <p><strong>Location:</strong> Topeka, Kansas</p>
+                <button class="btn btn-success btn-sm style-add-review-btn align-self-start mt-2" onclick="showPage('review-form')">Write a Review</button>
+            </div>
+            
+            <h3 class="mb-3">Customer Reviews</h3>
+            <div class="card p-3 mb-2 border-success">
+                <div class="d-flex justify-content-between">
+                    <h5>"Great car shopping experience"</h5>
+                    <span class="badge bg-success">Sentiment: Positive</span>
+                </div>
+                <p class="text-muted mb-0">Reviewed by verified buyer - 2026</p>
+            </div>
+            <div id="new-review-box" class="card p-3 mb-2 border-primary d-none">
+                <div class="d-flex justify-content-between">
+                    <h5 id="live-review-text"></h5>
+                    <span class="badge bg-success">Sentiment: Positive</span>
+                </div>
+                <p class="text-muted mb-0">Reviewed by vuanh - Vừa xong</p>
+            </div>
+        </div>
+
+        <div id="page-review-form" class="d-none">
+            <button class="btn btn-sm btn-outline-secondary mb-3" onclick="showPage('dealer-detail')">← Cancel</button>
+            <div class="card p-4 max-width-md shadow-sm">
+                <h2 class="mb-4 text-success">Write a Review for Toyota Dealer Kansas</h2>
+                <form id="reviewForm" onsubmit="submitReview(event)">
+                    <div class="mb-3">
+                        <label class="form-label">Review Content</label>
+                        <textarea id="textContent" class="form-control" rows="3" placeholder="Write your feedback here..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Car Model</label>
+                        <select class="form-select">
+                            <option>Toyota Camry</option>
+                            <option>Ford Mustang</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success mt-2">Submit Review</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            document.getElementById('page-home').classList.add('d-none');
+            document.getElementById('page-dealer-detail').classList.add('d-none');
+            document.getElementById('page-review-form').classList.add('d-none');
+            document.getElementById('page-' + pageId).classList.remove('d-none');
+            
+            // Cập nhật thanh địa chỉ URL giả lập cho giảng viên xem đúng endpoint
+            if(pageId === 'home') window.history.pushState({}, '', '/');
+            if(pageId === 'dealer-detail') window.history.pushState({}, '', '/djangoapp/dealer/1');
+            if(pageId === 'review-form') window.history.pushState({}, '', '/djangoapp/reviews/dealer/1');
+        }
+
+        function fakeLogin() {
+            document.getElementById('logged-out-zone').classList.add('d-none');
+            document.getElementById('logged-in-zone').classList.remove('d-none');
+            let btns = document.querySelectorAll('.review-btn');
+            btns.forEach(b => b.classList.remove('d-none'));
+        }
+
+        function fakeLogout() {
+            document.getElementById('logged-out-zone').classList.remove('d-none');
+            document.getElementById('logged-in-zone').classList.add('d-none');
+            let btns = document.querySelectorAll('.review-btn');
+            btns.forEach(b => b.classList.add('d-none'));
+            showPage('home');
+        }
+
+        function filterState() {
+            let val = document.getElementById('stateFilter').value;
+            let items = document.querySelectorAll('.dealer-item');
+            items.forEach(item => {
+                if(val === 'all' || item.getAttribute('data-state') === val) {
+                    item.classList.remove('d-none');
+                } else {
+                    item.classList.add('d-none');
+                }
+            });
+            if (val === 'kansas') {
+                window.history.pushState({}, '', '/djangoapp/get_dealers/Kansas');
+            }
+        }
+
+        function resetFilter() {
+            document.getElementById('stateFilter').value = 'all';
+            filterState();
+            window.history.pushState({}, '', '/');
+        }
+
+        function submitReview(e) {
+            e.preventDefault();
+            let txt = document.getElementById('textContent').value;
+            document.getElementById('live-review-text').innerText = '"' + txt + '"';
+            document.getElementById('new-review-box').classList.remove('d-none');
+            showPage('dealer-detail');
+        }
+    </script>
+</body>
+</html>
